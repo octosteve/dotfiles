@@ -1,0 +1,8 @@
+mkdir -p ~/config/nvim
+ln -s $(pwd)/neovimrc ~/.config/nvim/init.vim
+mkdir -p ~/.vim
+ln -s $(pwd)/vimrc ~/.vim/vimrc
+# Incase we're using regular vim
+ln -s $(pwd)/vimrc ~/.vimrc
+
+ln -s $(pwd)/tmux.conf ~/.tmux.conf
