@@ -4,5 +4,18 @@ mkdir -p ~/.vim
 ln -s $(pwd)/vimrc ~/.vim/vimrc
 # Incase we're using regular vim
 ln -s $(pwd)/vimrc ~/.vimrc
+# Install minpac
+git clone https://github.com/k-takata/minpac.git \
+    ~/.vim/pack/minpac/opt/minpac
+git clone https://github.com/k-takata/minpac.git \
+    ~/.config/nvim/pack/minpac/opt/minpac
+# Install fzf
+git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+~/.fzf/install
 
 ln -s $(pwd)/tmux.conf ~/.tmux.conf
+ln -s $(pwd)/zshrc ~/.zshrc
+ln -s $(pwd)/zshrc.local ~/.zshrc.local
+
+# Setup bin dir for local binaries
+mkdir -p ~/bin
