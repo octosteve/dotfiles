@@ -6,9 +6,8 @@
 ################################################################################
 # Nowadays, grml's zsh setup lives in only *one* zshrc file.
 # That is the global one: /etc/zsh/zshrc (from grml-etc-core).
-# It is best to leave *this* file untouched and do personal changes to
-# your zsh setup via ${HOME}/.zshrc.local which is loaded at the end of
-# the global zshrc.
+# It is best to do personal changes to your zsh setup via this file which is
+# loaded at the end of the global zshrc.
 #
 # That way, we enable people on other operating systems to use our
 # setup, too, just by copying our global zshrc to their ${HOME}/.zshrc.
@@ -333,4 +332,37 @@ fi
 #vimpm ()      { vim `perldoc -l $1 | sed -e 's/pod$/pm/'` }
 #vimhelp ()    { vim -c "help $1" -c on -c "au! VimEnter *" }
 
+# Steven Custom
+
+alias vi="vim"
+alias git=hub
+alias cssh='tmux-cssh -cs'
+
+# Helper to see if a command exists
+command_exists () {
+  type "$1" &> /dev/null ;
+}
+
+# Use neovim if it's installed
+if command_exists nvim ; then
+  alias vim='nvim'
+fi
+
+function ide-off {
+  rm /usr/local/bin/atom
+  ln -s /Applications/Atom.app/Contents/Resources/app/atom.sh /usr/local/bin/atom
+  apm enable tree-view
+  apm disable learn-ide-3
+  apm disable learn-ide-3-tree
+  apm disable learn-ide-3-notifications
+}
+
+function ide-on {
+  rm /usr/local/bin/atom
+  ln -s /Applications/Learn IDE 3.app/Contents/Resources/app/atom.sh /usr/local/bin/atom
+  apm disable tree-view
+  apm enable learn-ide-3
+  apm enable learn-ide-3-tree
+  apm enable learn-ide-3-notifications
+}
 ## END OF FILE #################################################################

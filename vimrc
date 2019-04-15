@@ -6,6 +6,9 @@ function! TrimWhiteSpace()
   ''
 endfunction
 
+" Don't fall back to vi mode
+set nocompatible
+
 " Always assume decimals when using <C-a> and <C-x>
 set nrformats=
 
@@ -42,6 +45,22 @@ nnoremap <Leader>r :r <C-R>=expand('%:p:h') . '/'<CR>
 nnoremap <Leader><space> :nohlsearch<CR>
 nnoremap <Leader>f :Rg<space>
 nnoremap <C-p> :<C-u>FZF<CR>
+if has("nvim")
+  " Make escape work in the Neovim terminal.
+  tmap <C-o> <C-\><C-n>
+
+  " Make navigation into and out of Neovim terminal splits nicer.
+  tnoremap <C-h> <C-\><C-N><C-w>h
+  tnoremap <C-j> <C-\><C-N><C-w>j
+  tnoremap <C-k> <C-\><C-N><C-w>k
+  tnoremap <C-l> <C-\><C-N><C-w>l
+
+  " I like relative numbering when in normal mode.
+  autocmd TermOpen * setlocal conceallevel=0 colorcolumn=0 relativenumber
+
+  " Prefer Neovim terminal insert mode to normal mode.
+  autocmd BufEnter term://* startinsert
+endif
 
 set title
 set pastetoggle=<F2>
@@ -54,6 +73,10 @@ call minpac#add('slashmili/alchemist.vim')
 call minpac#add('tomasr/molokai')
 call minpac#add('tpope/vim-bundler')
 call minpac#add('tpope/vim-rails')
+call minpac#add('tpope/vim-sensible')
+call minpac#add('tpope/vim-commentary')
+call minpac#add('pangloss/vim-javascript')
+call minpac#add('mxw/vim-jsx')
 call minpac#add('janko-m/vim-test')
   nmap <silent> <leader>t :TestNearest<CR>
   nmap <silent> <leader>T :TestFile<CR>
@@ -67,6 +90,7 @@ call minpac#add('garbas/vim-snipmate')
 call minpac#add('honza/vim-snippets')
 call minpac#add('elixir-lang/vim-elixir')
 call minpac#add('jremmen/vim-ripgrep')
+call minpac#add('rust-lang/rust.vim')
 
 set background=dark
 set rtp+=~/.fzf
