@@ -170,6 +170,7 @@ fi
 ## ignore ~/.ssh/known_hosts entries
 #alias insecssh='ssh -o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null" -o "PreferredAuthentications=keyboard-interactive"'
 
+alias xclip="xclip -selection c"
 
 ## global aliases (for those who like them) ##
 
@@ -337,6 +338,17 @@ fi
 alias vi="vim"
 alias git=hub
 alias cssh='tmux-cssh -cs'
+PATH=$HOME/bin:$PATH
+
+. $HOME/.asdf/asdf.sh
+
+# append completions to fpath
+fpath=(${ASDF_DIR}/completions $fpath)
+# initialise completions with ZSH's compinit
+autoload -Uz compinit
+compinit
+
+eval "$(direnv hook zsh)"
 
 # Helper to see if a command exists
 command_exists () {
@@ -365,4 +377,16 @@ function ide-on {
   apm enable learn-ide-3-tree
   apm enable learn-ide-3-notifications
 }
+
+export FZF_DEFAULT_COMMAND='rg --files'
+if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
+    tmux attach -t default || tmux new -s default
+fi
+
+# Load Git completion
+zstyle ':completion:*:*:git:*' script ~/.zsh/git-completion.zsh
+fpath=(~/.zsh $fpath)
+
+autoload -Uz compinit && compinit
+export ERL_AFLAGS="-kernel shell_history enabled"
 ## END OF FILE #################################################################
