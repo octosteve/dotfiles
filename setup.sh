@@ -9,11 +9,12 @@ if env | grep -q ^CODESPACES=; then
 
   chsh -s /usr/bin/zsh
 
-  git clone https://github.com/vim/vim.git /tmp/vim
-  cd /tmp/vim/src
-  make
-  make install
-  cd -
+  $(
+    git clone https://github.com/vim/vim.git /tmp/vim
+    cd /tmp/vim/src
+    make
+    make install
+  )
   
   curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
   chmod u+x nvim.appimage
@@ -25,21 +26,21 @@ if env | grep -q ^CODESPACES=; then
 fi
 
 mkdir -p ~/.config/nvim
-ln -s $(pwd)/neovimrc ~/.config/nvim/init.vim
+ln -fs $(pwd)/neovimrc ~/.config/nvim/init.vim
 
 mkdir -p ~/.vim
-ln -s $(pwd)/vimrc ~/.vim/vimrc
+ln -fs $(pwd)/vimrc ~/.vim/vimrc
 
 # Incase we're using regular vim
-ln -s $(pwd)/vimrc ~/.vimrc# Install minpac
+ln -fs $(pwd)/vimrc ~/.vimrc# Install minpac
 git clone https://github.com/k-takata/minpac.git \
     ~/.vim/pack/minpac/opt/minpac
 
 git clone https://github.com/k-takata/minpac.git \
     ~/.config/nvim/pack/minpac/opt/minpac
-ln -s $(pwd)/tmux.conf ~/.tmux.conf
-ln -s $(pwd)/zshrc ~/.zshrc
-ln -s $(pwd)/zshrc.local ~/.zshrc.local
+ln -fs $(pwd)/tmux.conf ~/.tmux.conf
+ln -fs $(pwd)/zshrc ~/.zshrc
+ln -fs $(pwd)/zshrc.local ~/.zshrc.local
 
 # Install fzf
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
@@ -47,4 +48,4 @@ git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 
 # Setup bin dir for local binaries
 mkdir -p ~/bin
-ln -s /squashfs-root/AppRun ~/bin/nvim
+ln -fs /squashfs-root/AppRun ~/bin/nvim
