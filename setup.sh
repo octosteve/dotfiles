@@ -5,7 +5,7 @@ if [[ -z "${CODESPACES}" ]]; then
 
   apt-get update
 
-  apt install -y neovim direnv zsh hub build-essential nodejs
+  apt install -y neovim direnv zsh hub build-essential nodejs python3
 
   chsh -s /usr/bin/zsh
 
@@ -13,6 +13,14 @@ if [[ -z "${CODESPACES}" ]]; then
   cd /tmp/vim/src
   make
   make install
+  
+  curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
+  chmod u+x nvim.appimage
+  ./nvim.appimage --appimage-extract
+  ./squashfs-root/AppRun --version
+
+  mv squashfs-root /
+  pip3 install pynvim
 fi
 
 mkdir -p ~/.config/nvimln -s $(pwd)/neovimrc ~/.config/nvim/init.vim
@@ -36,3 +44,4 @@ git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 
 # Setup bin dir for local binaries
 mkdir -p ~/bin
+ln -s /squashfs-root/AppRun ~/bin/nvim
