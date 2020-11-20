@@ -23,7 +23,9 @@ if [[ -z "${CODESPACES}" ]]; then
   pip3 install pynvim
 fi
 
-mkdir -p ~/.config/nvimln -s $(pwd)/neovimrc ~/.config/nvim/init.vim
+mkdir -p ~/.config/nvim
+ln -s $(pwd)/neovimrc ~/.config/nvim/init.vim
+
 mkdir -p ~/.vim
 ln -s $(pwd)/vimrc ~/.vim/vimrc
 
