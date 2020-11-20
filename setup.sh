@@ -5,7 +5,7 @@ if [[ -z "${CODESPACES}" ]]; then
 
   apt-get update
 
-  apt install -y neovim direnv zsh hub build-essential nodejs python3 ripgrep
+  apt install -y neovim direnv zsh hub build-essential nodejs python3 ripgrep ruby-dev
 
   chsh -s /usr/bin/zsh
 
