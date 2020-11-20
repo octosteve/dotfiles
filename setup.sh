@@ -13,6 +13,7 @@ if env | grep -q ^CODESPACES=; then
   cd /tmp/vim/src
   make
   make install
+  cd -
   
   curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
   chmod u+x nvim.appimage
