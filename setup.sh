@@ -1,5 +1,5 @@
 #!/bin/bash
-if [[ -z "${CODESPACES}" ]]; then
+if env | grep -q ^CODESPACES=; then
   curl -sL https://deb.nodesource.com/setup_15.x | bash -
   add-apt-repository ppa:cpick/hub
 
