@@ -355,29 +355,6 @@ command_exists () {
   type "$1" &> /dev/null ;
 }
 
-# Use neovim if it's installed
-if command_exists nvim ; then
-  alias vim='nvim'
-fi
-
-function ide-off {
-  rm /usr/local/bin/atom
-  ln -s /Applications/Atom.app/Contents/Resources/app/atom.sh /usr/local/bin/atom
-  apm enable tree-view
-  apm disable learn-ide-3
-  apm disable learn-ide-3-tree
-  apm disable learn-ide-3-notifications
-}
-
-function ide-on {
-  rm /usr/local/bin/atom
-  ln -s /Applications/Learn IDE 3.app/Contents/Resources/app/atom.sh /usr/local/bin/atom
-  apm disable tree-view
-  apm enable learn-ide-3
-  apm enable learn-ide-3-tree
-  apm enable learn-ide-3-notifications
-}
-
 export FZF_DEFAULT_COMMAND='rg --files'
 if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
     tmux attach -t default || tmux new -s default

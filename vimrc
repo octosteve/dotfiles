@@ -12,10 +12,12 @@ set nocompatible
 " Always assume decimals when using <C-a> and <C-x>
 set nrformats=
 
+filetype plugin indent on
 set tabstop=2
 set softtabstop=2
 set expandtab
 set shiftwidth=2
+set smartindent
 
 let g:mapleader=','
 set number
@@ -67,6 +69,7 @@ set title
 set pastetoggle=<F2>
 
 call minpac#add('k-takata/minpac', {'type': 'opt'})
+call minpac#add('junegunn/fzf', {'do': { -> fzf#install()}})
 call minpac#add('junegunn/fzf.vim')
 call minpac#add('Shougo/deoplete.nvim')
 call minpac#add('mattn/emmet-vim')
@@ -87,7 +90,6 @@ call minpac#add('tpope/vim-bundler')
 call minpac#add('tpope/vim-rails')
 call minpac#add('tpope/vim-rake')
 call minpac#add('radenling/vim-dispatch-neovim')
-call minpac#add('dense-analysis/ale')
 call minpac#add('ekalinin/Dockerfile.vim')
 call minpac#add('vim-crystal/vim-crystal')
 let g:crystal_auto_format = 1
@@ -101,7 +103,8 @@ nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gr <Plug>(coc-references)
 nnoremap <silent> <leader>co  :<C-u>CocList outline<CR>
 let g:coc_global_extensions = ['coc-solargraph']
-call minpac#add('w0rp/ale')
+
+call minpac#add('dense-analysis/ale')
 let g:ale_linters = {
 \ 'javascript': ['eslint'],
 \ 'elixir': ['elixir-ls', 'credo'],
