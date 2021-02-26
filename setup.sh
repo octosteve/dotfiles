@@ -1,11 +1,11 @@
 #!/bin/bash
 if env | grep -q ^CODESPACES=; then
   curl -sL https://deb.nodesource.com/setup_15.x | bash -
-  add-apt-repository ppa:cpick/hub
+  sudo add-apt-repository ppa:cpick/hub
 
-  apt-get update
+  sudo apt-get update
 
-  apt install -y neovim direnv zsh hub build-essential nodejs python3 ripgrep ruby-dev
+  sudo apt install -y neovim direnv zsh hub build-essential nodejs python3 ripgrep ruby-dev
 
   chsh -s /usr/bin/zsh
 
