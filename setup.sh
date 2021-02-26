@@ -1,19 +1,20 @@
 #!/bin/bash
 if env | grep -q ^CODESPACES=; then
-  curl -sL https://deb.nodesource.com/setup_15.x | bash -
+  # You might not need this
+  #  curl -sL https://deb.nodesource.com/setup_15.x | bash -
   sudo add-apt-repository ppa:cpick/hub
 
   sudo apt-get update
 
   sudo apt install -y neovim direnv zsh hub build-essential nodejs python3 ripgrep ruby-dev
 
-  chsh -s /usr/bin/zsh
+  sudo chsh -s /usr/bin/zsh codespace
 
   $(
     git clone https://github.com/vim/vim.git /tmp/vim
     cd /tmp/vim/src
     make
-    make install
+    sudo make install
   )
   
   curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
