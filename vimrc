@@ -47,7 +47,7 @@ nnoremap <Leader>e :e <C-R>=expand('%:p:h') . '/'<CR>
 nnoremap <Leader>r :r <C-R>=expand('%:p:h') . '/'<CR>
 nnoremap <Leader><space> :nohlsearch<CR>
 nnoremap <Leader>f :Rg<space>
-nnoremap <C-p> :<C-u>FZF<CR>
+nnoremap <C-P> :FZF<CR>
 if has("nvim")
   " Make escape work in the Neovim terminal.
   tmap <C-o> <C-\><C-n>
@@ -82,55 +82,58 @@ call minpac#add('janko-m/vim-test')
   nmap <silent> <leader>a :TestSuite<CR>
   nmap <silent> <leader>l :TestLast<CR>
   nmap <silent> <leader>g :TestVisit<CR>
-  let test#strategy = "neovim"
+  let test#strategy = "vimterminal"
 call minpac#add('jremmen/vim-ripgrep')
 call minpac#add('tpope/vim-projectionist')
 call minpac#add('tpope/vim-dispatch')
+call minpac#add('asux/vim-capybara')
 call minpac#add('tpope/vim-bundler')
 call minpac#add('tpope/vim-rails')
 call minpac#add('tpope/vim-rake')
 call minpac#add('radenling/vim-dispatch-neovim')
 call minpac#add('ekalinin/Dockerfile.vim')
 call minpac#add('vim-crystal/vim-crystal')
-let g:crystal_auto_format = 1
+  let g:crystal_auto_format = 1
 
 call minpac#add('SirVer/ultisnips')
 call minpac#add('honza/vim-snippets')
 call minpac#add('stefandtw/quickfix-reflector.vim')
-call minpac#add('neoclide/coc.nvim')
-call minpac#add('amiralies/coc-elixir')
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gr <Plug>(coc-references)
-nnoremap <silent> <leader>co  :<C-u>CocList outline<CR>
-let g:coc_global_extensions = ['coc-solargraph']
+call minpac#add('ziglang/zig.vim')
+call minpac#add('neoclide/coc.nvim', {'branch': 'release'})
+  nmap <silent> gd <Plug>(coc-definition)
+  nmap <silent> gr <Plug>(coc-references)
+  nnoremap <silent> <leader>co  :<C-u>CocList outline<CR>
+  let g:coc_global_extensions = ['coc-solargraph']
 
 call minpac#add('dense-analysis/ale')
-let g:ale_linters = {
-\ 'javascript': ['eslint'],
-\ 'elixir': ['elixir-ls', 'credo'],
-\ 'ruby': ['rubocop', 'ruby', 'solargraph'],
-\ }
+  let g:ale_linters = {
+  \ 'javascript': ['eslint'],
+  \ 'elixir': ['elixir-ls', 'credo'],
+  \ 'ruby': ['rubocop', 'ruby', 'solargraph'],
+  \ }
 
 
-let g:ale_fixers = {'*': ['remove_trailing_lines', 'trim_whitespace']}
-let g:ale_fixers.javascript = ['eslint', 'prettier']
-let g:ale_fixers.html = ['prettier']
-let g:ale_fixers.scss = ['stylelint']
-let g:ale_fixers.css = ['stylelint']
-let g:ale_fixers.ruby = ['rubocop']
-let g:ale_ruby_rubocop_executable = 'bundle'
-let g:ale_fixers.elixir = ['mix_format']
-let g:ale_fixers.xml = ['xmllint']
-let g:ale_fix_on_save = 1
+  let g:ale_fixers = {'*': ['remove_trailing_lines', 'trim_whitespace']}
+  let g:ale_fixers.javascript = ['eslint', 'prettier']
+  let g:ale_fixers.html = ['prettier']
+  let g:ale_fixers.scss = ['stylelint']
+  let g:ale_fixers.css = ['stylelint']
+  let g:ale_fixers.ruby = ['rubocop']
+  let g:ale_ruby_rubocop_executable = 'bin/rubocop'
+  let g:ale_ruby_rubocop_auto_correct_all = 1
 
-let g:ale_sign_column_always = 1
-let g:ale_elixir_credo_strict = 1
-"
-" Required, tell ALE where to find Elixir LS
-let g:ale_elixir_elixir_ls_release = expand("/home/steven/Development/elixir-ls/rel")
+  let g:ale_fixers.elixir = ['mix_format']
+  let g:ale_fixers.xml = ['xmllint']
+  let g:ale_fix_on_save = 1
 
-" Optional, you can disable Dialyzer with this setting
-let g:ale_elixir_elixir_ls_config = {'elixirLS': {'dialyzerEnabled': v:false}}
+  let g:ale_sign_column_always = 1
+  let g:ale_elixir_credo_strict = 1
+  "
+  " Required, tell ALE where to find Elixir LS
+  let g:ale_elixir_elixir_ls_release = expand("/home/steven/Development/elixir-ls/rel")
+
+  " Optional, you can disable Dialyzer with this setting
+  let g:ale_elixir_elixir_ls_config = {'elixirLS': {'dialyzerEnabled': v:false}}
 
 
 " Mappings in the style of unimpaired-next
