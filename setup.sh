@@ -25,11 +25,6 @@ fi
 
 git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.8.1
 asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
-# Install NodeJS
-asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
-asdf install nodejs latest
-asdf global nodejs latest
-
 mkdir -p ~/.config/nvim
 ln -fs $(pwd)/neovimrc ~/.config/nvim/init.vim
 
@@ -50,6 +45,13 @@ ln -fs $(pwd)/tmux.conf ~/.tmux.conf
 ln -fs $(pwd)/zshrc ~/.zshrc
 ln -fs $(pwd)/zshrc.local ~/.zshrc.local
 
+source ~/.zshrc
+
+# Install NodeJS
+asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
+asdf install nodejs latest
+asdf global nodejs latest
+
 # Install fzf
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 ~/.fzf/install --all
@@ -58,6 +60,6 @@ git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 mkdir -p ~/bin
 ln -fs /squashfs-root/AppRun ~/bin/nvim
 
-~bin/nvim --headless +PackUpdate +qa
+~/bin/nvim --headless +PackUpdate +qa
 
 vim -Es -u $HOME/.vimrc -c "PackUpdate | qa"
