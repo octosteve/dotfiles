@@ -6,18 +6,19 @@ if env | grep -q ^CODESPACES=; then
 
   sudo apt-get update
 
-  sudo apt install -y direnv zsh hub build-essential nodejs python3 ripgrep ruby-dev fuse libfuse2 bat
+  sudo apt install -y direnv zsh hub build-essential nodejs python3 ripgrep ruby-dev
 
 	sudo chsh -s "$(which zsh)" "$(whoami)"
 
 	# install latest neovim
-	sudo modprobe fuse
-	sudo groupadd fuse
-	sudo usermod -a -G fuse "$(whoami)"
 	wget https://github.com/github/copilot.vim/releases/download/neovim-nightlies/appimage.zip
 	unzip appimage.zip
+
 	sudo chmod u+x nvim.appimage
-	sudo mv nvim.appimage /usr/local/bin/nvim
+  ./nvim.appimage --appimage-extract
+  ./squashfs-root/AppRun --version
+
+  mv squashfs-root /
 
   pip3 install pynvim
 fi
@@ -53,3 +54,4 @@ git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 
 # Setup bin dir for local binaries
 mkdir -p ~/bin
+ln -fs /squashfs-root/AppRun ~/bin/nvim
