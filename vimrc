@@ -103,10 +103,10 @@ call minpac#add('ekalinin/Dockerfile.vim')
 call minpac#add('vim-crystal/vim-crystal')
   let g:crystal_auto_format = 1
 
-"call minpac#add('SirVer/ultisnips')
 call minpac#add('honza/vim-snippets')
 call minpac#add('stefandtw/quickfix-reflector.vim')
 call minpac#add('ziglang/zig.vim')
+call minpac#add('github/copilot.vim')
 call minpac#add('neoclide/coc.nvim', {'branch': 'release', 'do': 'yarn install --frozen-lockfile'})
   nnoremap <silent> <leader>co  :<C-u>CocList outline<CR>
 	" Use <c-space> to trigger completion.

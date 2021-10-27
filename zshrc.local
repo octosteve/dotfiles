@@ -335,7 +335,9 @@ alias xclip="xclip -selection c"
 
 # Steven Custom
 
-alias vi="vim"
+alias vi="nvim"
+alias vim="nvim"
+
 alias git=hub
 alias cssh='tmux-cssh -cs'
 PATH=$HOME/bin:$PATH

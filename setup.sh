@@ -6,23 +6,19 @@ if env | grep -q ^CODESPACES=; then
 
   sudo apt-get update
 
-  sudo apt install -y neovim direnv zsh hub build-essential nodejs python3 ripgrep ruby-dev
+  sudo apt install -y direnv zsh hub build-essential nodejs python3 ripgrep ruby-dev fuse libfuse2 bat
 
-  sudo chsh -s /usr/bin/zsh codespace
+	sudo chsh -s "$(which zsh)" "$(whoami)"
 
-  $(
-    git clone https://github.com/vim/vim.git /tmp/vim
-    cd /tmp/vim/src
-    make
-    sudo make install
-  )
+	# install latest neovim
+	sudo modprobe fuse
+	sudo groupadd fuse
+	sudo usermod -a -G fuse "$(whoami)"
+	wget https://github.com/github/copilot.vim/releases/download/neovim-nightlies/appimage.zip
+	unzip appimage.zip
+	sudo chmod u+x nvim.appimage
+	sudo mv nvim.appimage /usr/local/bin/nvim
 
-  curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
-  chmod u+x nvim.appimage
-  ./nvim.appimage --appimage-extract
-  ./squashfs-root/AppRun --version
-
-  mv squashfs-root /
   pip3 install pynvim
 fi
 
@@ -33,12 +29,20 @@ mkdir -p ~/.vim
 ln -fs $(pwd)/vimrc ~/.vim/vimrc
 
 # Incase we're using regular vim
-ln -fs $(pwd)/vimrc ~/.vimrc# Install minpac
+ln -fs $(pwd)/vimrc ~/.vimrc
+
+# Install minpac
 git clone https://github.com/k-takata/minpac.git \
     ~/.vim/pack/minpac/opt/minpac
 
 git clone https://github.com/k-takata/minpac.git \
     ~/.config/nvim/pack/minpac/opt/minpac
+
+nvim +'PackUpdate' +qa
+
+vim -Es -u $HOME/.vimrc -c "PackUpdate | qa"
+
+
 ln -fs $(pwd)/tmux.conf ~/.tmux.conf
 ln -fs $(pwd)/zshrc ~/.zshrc
 ln -fs $(pwd)/zshrc.local ~/.zshrc.local
@@ -49,4 +53,3 @@ git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 
 # Setup bin dir for local binaries
 mkdir -p ~/bin
-ln -fs /squashfs-root/AppRun ~/bin/nvim
