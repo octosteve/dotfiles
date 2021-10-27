@@ -18,7 +18,7 @@ if env | grep -q ^CODESPACES=; then
   ./nvim.appimage --appimage-extract
   ./squashfs-root/AppRun --version
 
-  mv squashfs-root /
+  sudo mv squashfs-root /
 
   pip3 install pynvim
 fi
