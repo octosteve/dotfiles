@@ -51,6 +51,6 @@ git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 mkdir -p ~/bin
 ln -fs /squashfs-root/AppRun ~/bin/nvim
 
-nvim +'PackUpdate' +qa
+~/bin/nvim +'PackUpdate' +qa
 
 vim -Es -u $HOME/.vimrc -c "PackUpdate | qa"
