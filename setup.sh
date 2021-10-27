@@ -19,6 +19,7 @@ if env | grep -q ^CODESPACES=; then
   ./squashfs-root/AppRun --version
 
   sudo mv squashfs-root /
+  sudo mv /squashfs-root/AppRun /usr/local/bin/nvim
 
   pip3 install pynvim
 fi
@@ -39,10 +40,12 @@ git clone https://github.com/k-takata/minpac.git \
 git clone https://github.com/k-takata/minpac.git \
     ~/.config/nvim/pack/minpac/opt/minpac
 
+# Setup bin dir for local binaries
+mkdir -p ~/bin
+
 nvim +'PackUpdate' +qa
 
 vim -Es -u $HOME/.vimrc -c "PackUpdate | qa"
-
 
 ln -fs $(pwd)/tmux.conf ~/.tmux.conf
 ln -fs $(pwd)/zshrc ~/.zshrc
@@ -51,7 +54,3 @@ ln -fs $(pwd)/zshrc.local ~/.zshrc.local
 # Install fzf
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 ~/.fzf/install --all
-
-# Setup bin dir for local binaries
-mkdir -p ~/bin
-ln -fs /squashfs-root/AppRun ~/bin/nvim
