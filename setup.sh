@@ -23,6 +23,13 @@ if env | grep -q ^CODESPACES=; then
   pip3 install pynvim
 fi
 
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.8.1
+asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
+# Install NodeJS
+asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
+asdf install nodejs latest
+asdf global nodejs latest
+
 mkdir -p ~/.config/nvim
 ln -fs $(pwd)/neovimrc ~/.config/nvim/init.vim
 
@@ -51,6 +58,6 @@ git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 mkdir -p ~/bin
 ln -fs /squashfs-root/AppRun ~/bin/nvim
 
-~/bin/nvim +'PackUpdate' +qa
+~bin/nvim --headless +PackUpdate +qa
 
 vim -Es -u $HOME/.vimrc -c "PackUpdate | qa"

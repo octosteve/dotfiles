@@ -91,7 +91,6 @@ call minpac#add('janko-m/vim-test')
   nmap <silent> <leader>l :TestLast<CR>
   nmap <silent> <leader>g :TestVisit<CR>
   let test#strategy = "vimterminal"
-call minpac#add('jremmen/vim-ripgrep')
 call minpac#add('tpope/vim-projectionist')
 call minpac#add('tpope/vim-dispatch')
 call minpac#add('asux/vim-capybara')
