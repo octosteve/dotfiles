@@ -19,7 +19,6 @@ if env | grep -q ^CODESPACES=; then
   ./squashfs-root/AppRun --version
 
   sudo mv squashfs-root /
-  sudo mv /squashfs-root/AppRun /usr/local/bin/nvim
 
   pip3 install pynvim
 fi
@@ -42,6 +41,7 @@ git clone https://github.com/k-takata/minpac.git \
 
 # Setup bin dir for local binaries
 mkdir -p ~/bin
+ln -fs /squashfs-root/AppRun ~/bin/nvim
 
 nvim +'PackUpdate' +qa
 
