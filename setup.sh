@@ -45,7 +45,7 @@ ln -fs $(pwd)/tmux.conf ~/.tmux.conf
 ln -fs $(pwd)/zshrc ~/.zshrc
 ln -fs $(pwd)/zshrc.local ~/.zshrc.local
 
-source ~/.zshrc
+exec zsh
 
 # Install NodeJS
 asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
@@ -60,6 +60,6 @@ git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 mkdir -p ~/bin
 ln -fs /squashfs-root/AppRun ~/bin/nvim
 
-~/bin/nvim --headless +PackUpdate +qa
+nvim --headless +PackUpdate +qa
 
 vim -Es -u $HOME/.vimrc -c "PackUpdate | qa"
