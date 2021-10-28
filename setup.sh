@@ -51,9 +51,11 @@ echo "Linking rc files Files"
 
 # Install NodeJS
 echo "Installing NodeJS"
-asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
-asdf install nodejs latest
-asdf global nodejs latest
+zsh -c ". ~/.zshrc && \
+        asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git && \
+        asdf install nodejs latest && \
+        asdf global nodejs latest
+       "
 
 # Install fzf
 echo "Installing FZF"
@@ -65,7 +67,7 @@ mkdir -p ~/bin
 ln -fs /squashfs-root/AppRun ~/bin/nvim
 
 echo "Configuring NVIM"
-nvim --headless +PackUpdate +qa
+zsh -c ". ~/.zshrc && ~nvim --headless +PackUpdate +qa"
 
 echo "Configuring VIM"
-vim -Es -u $HOME/.vimrc -c "PackUpdate | qa"
+zsh -c ". ~/.zshrc && vim -Es -u $HOME/.vimrc -c "call minpac#update('', {'do': 'quit'})" +qa"

@@ -272,7 +272,7 @@ nmap <silent> ]W <Plug>(ale_last)
 set background=dark
 set rtp+=~/.fzf
 syntax enable
-colorscheme molokai
+silent! colorscheme molokai
 highlight ExtraWhitespace ctermbg=red guibg=red
 match ExtraWhitespace /\s\+$/
 command! PackUpdate call minpac#update()
