@@ -1,4 +1,6 @@
 #!/bin/bash
+SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+
 if env | grep -q ^CODESPACES=; then
   # You might not need this
   #  curl -sL https://deb.nodesource.com/setup_15.x | bash -
@@ -25,13 +27,13 @@ fi
 
 git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.8.1
 mkdir -p ~/.config/nvim
-ln -fs $(pwd)/neovimrc ~/.config/nvim/init.vim
+ln -fs $SCRIPT_DIR/neovimrc ~/.config/nvim/init.vim
 
 mkdir -p ~/.vim
-ln -fs $(pwd)/vimrc ~/.vim/vimrc
+ln -fs $SCRIPT_DIR/vimrc ~/.vim/vimrc
 
 # Incase we're using regular vim
-ln -fs $(pwd)/vimrc ~/.vimrc
+ln -fs $SCRIPT_DIR/vimrc ~/.vimrc
 
 # Install minpac
 git clone https://github.com/k-takata/minpac.git \
@@ -40,9 +42,9 @@ git clone https://github.com/k-takata/minpac.git \
 git clone https://github.com/k-takata/minpac.git \
     ~/.config/nvim/pack/minpac/opt/minpac
 
-ln -fs $(pwd)/tmux.conf ~/.tmux.conf
-ln -fs $(pwd)/zshrc ~/.zshrc
-ln -fs $(pwd)/zshrc.local ~/.zshrc.local
+ln -fs $SCRIPT_DIR/tmux.conf ~/.tmux.conf
+ln -fs $SCRIPT_DIR/zshrc ~/.zshrc
+ln -fs $SCRIPT_DIR/zshrc.local ~/.zshrc.local
 
 exec zsh
 
