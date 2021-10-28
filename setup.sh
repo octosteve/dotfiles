@@ -42,6 +42,7 @@ git clone https://github.com/k-takata/minpac.git \
 git clone https://github.com/k-takata/minpac.git \
     ~/.config/nvim/pack/minpac/opt/minpac
 
+echo "Linking rc files Files"
 ln -fs $SCRIPT_DIR/tmux.conf ~/.tmux.conf
 ln -fs $SCRIPT_DIR/zshrc ~/.zshrc
 ln -fs $SCRIPT_DIR/zshrc.local ~/.zshrc.local
@@ -49,11 +50,13 @@ ln -fs $SCRIPT_DIR/zshrc.local ~/.zshrc.local
 exec zsh
 
 # Install NodeJS
+echo "Installing NodeJS"
 asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
 asdf install nodejs latest
 asdf global nodejs latest
 
 # Install fzf
+echo "Installing FZF"
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 ~/.fzf/install --all
 
@@ -61,6 +64,8 @@ git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 mkdir -p ~/bin
 ln -fs /squashfs-root/AppRun ~/bin/nvim
 
+echo "Configuring NVIM"
 nvim --headless +PackUpdate +qa
 
+echo "Configuring VIM"
 vim -Es -u $HOME/.vimrc -c "PackUpdate | qa"
