@@ -24,7 +24,6 @@ if env | grep -q ^CODESPACES=; then
 fi
 
 git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.8.1
-asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
 mkdir -p ~/.config/nvim
 ln -fs $(pwd)/neovimrc ~/.config/nvim/init.vim
 
