@@ -9,6 +9,8 @@ endfunction
 " Don't fall back to vi mode
 set nocompatible
 
+set completeopt=longest,menuone
+
 " Always assume decimals when using <C-a> and <C-x>
 set nrformats=
 
@@ -54,6 +56,7 @@ nnoremap <Leader>e :e <C-R>=expand('%:p:h') . '/'<CR>
 nnoremap <Leader>r :r <C-R>=expand('%:p:h') . '/'<CR>
 nnoremap <Leader><space> :nohlsearch<CR>
 nnoremap <Leader>f :Rg<space>
+nnoremap <Leader>c :CocSearch<space>
 nnoremap <C-P> :FZF<CR>
 if has("nvim")
   " Make escape work in the Neovim terminal.
@@ -84,13 +87,14 @@ call minpac#add('mattn/emmet-vim')
 call minpac#add('elixir-editors/vim-elixir')
 call minpac#add('roman/golden-ratio')
 call minpac#add('tomasr/molokai')
+call minpac#add('altercation/vim-colors-solarized')
 call minpac#add('janko-m/vim-test')
   nmap <silent> <leader>t :TestNearest<CR>
   nmap <silent> <leader>T :TestFile<CR>
   nmap <silent> <leader>a :TestSuite<CR>
   nmap <silent> <leader>l :TestLast<CR>
   nmap <silent> <leader>g :TestVisit<CR>
-  let test#strategy = "vimterminal"
+  let test#strategy = "neovim"
 call minpac#add('tpope/vim-projectionist')
 call minpac#add('tpope/vim-dispatch')
 call minpac#add('asux/vim-capybara')
@@ -106,7 +110,8 @@ call minpac#add('honza/vim-snippets')
 call minpac#add('stefandtw/quickfix-reflector.vim')
 call minpac#add('ziglang/zig.vim')
 call minpac#add('github/copilot.vim')
-call minpac#add('neoclide/coc.nvim', {'branch': 'release', 'do': 'yarn install --frozen-lockfile'})
+" Run call coc#util#install() when the plugin is loaded.
+call minpac#add('neoclide/coc.nvim', {'do': { -> coc#util#install()}})
   nnoremap <silent> <leader>co  :<C-u>CocList outline<CR>
 	" Use <c-space> to trigger completion.
 	if has('nvim')
@@ -114,11 +119,6 @@ call minpac#add('neoclide/coc.nvim', {'branch': 'release', 'do': 'yarn install -
 	else
 		inoremap <silent><expr> <c-@> coc#refresh()
 	endif
-
-	" Make <CR> auto-select the first completion item and notify coc.nvim to
-	" format on enter, <cr> could be remapped by other vim plugin
-	inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
-																\: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
 	" Use `[g` and `]g` to navigate diagnostics
 	" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
@@ -231,11 +231,12 @@ call minpac#add('neoclide/coc.nvim', {'branch': 'release', 'do': 'yarn install -
 
   let g:coc_global_extensions = ['coc-solargraph']
 
-call minpac#add('dense-analysis/ale')
+ call minpac#add('dense-analysis/ale')
   let g:ale_linters = {
   \ 'javascript': ['eslint'],
   \ 'elixir': ['elixir-ls', 'credo'],
-  \ 'ruby': ['rubocop', 'ruby', 'solargraph'],
+  \ 'ruby': ['rubocop'],
+  \ 'erb': ['erblint'],
   \ }
 
 
@@ -245,11 +246,12 @@ call minpac#add('dense-analysis/ale')
   let g:ale_fixers.scss = ['stylelint']
   let g:ale_fixers.css = ['stylelint']
   let g:ale_fixers.ruby = ['rubocop']
-  let g:ale_ruby_rubocop_executable = 'bin/rubocop'
-  let g:ale_ruby_rubocop_auto_correct_all = 1
-
   let g:ale_fixers.elixir = ['mix_format']
   let g:ale_fixers.xml = ['xmllint']
+
+  let g:ale_ruby_rubocop_auto_correct_all = 1
+  let g:ale_ruby_rubocop_executable = 'bundle exec rubocop'
+
   let g:ale_fix_on_save = 1
 
   let g:ale_sign_column_always = 1
@@ -260,6 +262,8 @@ call minpac#add('dense-analysis/ale')
 
   " Optional, you can disable Dialyzer with this setting
   let g:ale_elixir_elixir_ls_config = {'elixirLS': {'dialyzerEnabled': v:false}}
+call minpac#add('iamcco/markdown-preview.nvim', {'do': 'packloadall! | call mkdp#util#install()'})
+
 
 
 " Mappings in the style of unimpaired-next
@@ -271,8 +275,14 @@ nmap <silent> ]W <Plug>(ale_last)
 
 set background=dark
 set rtp+=~/.fzf
+
+let g:solarized_termcolors=256
 syntax enable
-silent! colorscheme molokai
+au BufReadPost *.*eex set syntax=html
+
+set background=light
+silent! colorscheme solarized
+
 highlight ExtraWhitespace ctermbg=red guibg=red
 match ExtraWhitespace /\s\+$/
 command! PackUpdate call minpac#update()

@@ -2,8 +2,6 @@
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 if env | grep -q ^CODESPACES=; then
-  # You might not need this
-  #  curl -sL https://deb.nodesource.com/setup_15.x | bash -
   sudo add-apt-repository ppa:cpick/hub
 
   sudo apt-get update
@@ -12,15 +10,8 @@ if env | grep -q ^CODESPACES=; then
 
 	sudo chsh -s "$(which zsh)" "$(whoami)"
 
-	# install latest neovim
-	wget https://github.com/github/copilot.vim/releases/download/neovim-nightlies/appimage.zip
-	unzip appimage.zip
-
-	sudo chmod u+x nvim.appimage
-  ./nvim.appimage --appimage-extract
-  ./squashfs-root/AppRun --version
-
-  sudo mv squashfs-root /
+  wget https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.deb
+  sudo apt install ./nvim-linux64.deb
 
   pip3 install pynvim
 fi
@@ -57,6 +48,14 @@ zsh -c ". ~/.zshrc && \
         asdf global nodejs latest
        "
 
+# Install Ruby
+echo "Installing Ruby"
+zsh -c ". ~/.zshrc && \
+        asdf plugin add ruby https://github.com/asdf-vm/asdf-ruby.git && \
+        asdf install ruby latest && \
+        asdf global ruby latest
+       "
+
 # Install fzf
 echo "Installing FZF"
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
@@ -64,7 +63,6 @@ git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 
 # Setup bin dir for local binaries
 mkdir -p ~/bin
-ln -fs /squashfs-root/AppRun ~/bin/nvim
 
 echo "Configuring NVIM"
 zsh -c ". ~/.zshrc && nvim --headless +PackUpdate +qa"

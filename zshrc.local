@@ -335,14 +335,31 @@ alias xclip="xclip -selection c"
 
 # Steven Custom
 
+function downloadM3u() {
+  ffmpeg -i "$1" -bsf:a aac_adtstoasc -vcodec copy -c copy -crf 50 $2.mp4
+}
+
+function openDraftPR() {
+  # assumes your branch is named something like octosteve/xxxx/description-of-work-here
+  # This will open a PR with a body of 'Closes #xxxx'
+  issue_name=$(git branch --show-current | sed -e "s/$USER\///g" -e 's/\/.*$//g')
+  gh pr create -db "Closes #$issue_name"
+}
+
 alias vi="nvim"
 alias vim="nvim"
 
 alias git=hub
 alias cssh='tmux-cssh -cs'
-PATH=$HOME/bin:$PATH
+PATH=/usr/local/opt/mysql@5.7/bin:$HOME/github/github/bin:$HOME/bin:$PATH
 
-. $HOME/.asdf/asdf.sh
+if [ -z ${CODESPACES} ]; then
+  . $HOME/.asdf/asdf.sh
+else
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+  eval "$(nodenv init -)"
+  eval "$(rbenv init -)"
+fi
 
 # append completions to fpath
 fpath=(${ASDF_DIR}/completions $fpath)
@@ -364,4 +381,3 @@ fi
 
 autoload -Uz compinit && compinit
 export ERL_AFLAGS="-kernel shell_history enabled"
-## END OF FILE #################################################################
