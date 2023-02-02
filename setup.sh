@@ -50,3 +50,5 @@ git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 
 # Setup bin dir for local binaries
 mkdir -p ~/bin
+
+nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'
