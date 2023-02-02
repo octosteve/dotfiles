@@ -18,7 +18,8 @@ lsp.ensure_installed({
 	'gopls',
 	'jsonls',
 	'marksman',
-	'vimls'
+	'vimls',
+	'yamlls',
 })
 
 -- Fix Undefined global 'vim'
