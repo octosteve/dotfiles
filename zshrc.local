@@ -348,16 +348,12 @@ function openDraftPR() {
 
 alias vi="nvim"
 alias vim="nvim"
-
-alias git=hub
-alias cssh='tmux-cssh -cs'
-PATH=/usr/local/opt/mysql@5.7/bin:$HOME/github/github/bin:$HOME/bin:$PATH
+#
 
 if [ -z ${CODESPACES} ]; then
   . $HOME/.asdf/asdf.sh
 else
   eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-  eval "$(nodenv init -)"
   eval "$(rbenv init -)"
 fi
 

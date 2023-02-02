@@ -2,21 +2,18 @@
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 if env | grep -q ^CODESPACES=; then
-  sudo add-apt-repository ppa:cpick/hub
-
   sudo apt-get update
 
-  sudo apt install -y direnv zsh hub build-essential nodejs python3 ripgrep ruby-dev
+  sudo apt install -y direnv zsh build-essential ripgrep ruby-dev
 
 	sudo chsh -s "$(which zsh)" "$(whoami)"
 
-  wget https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.deb
+  wget https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.deb
   sudo apt install ./nvim-linux64.deb
-
-  pip3 install pynvim
 fi
 
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.8.1
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.11.1
+
 mkdir -p ~/.config/nvim
 ln -fs $SCRIPT_DIR/neovimrc ~/.config/nvim/init.vim
 
