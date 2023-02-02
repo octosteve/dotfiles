@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
-if env | grep -q ^CODESPACES=; then
+if [ -n "$CODESPACES" ]; then
   sudo apt-get update
 
   sudo apt install -y direnv zsh build-essential ripgrep ruby-dev
@@ -15,20 +15,10 @@ fi
 git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.11.1
 
 mkdir -p ~/.config/nvim
-ln -fs $SCRIPT_DIR/neovimrc ~/.config/nvim/init.vim
+ln -fs $SCRIPT_DIR/nvim_config/* ~/.config/nvim/
 
-mkdir -p ~/.vim
-ln -fs $SCRIPT_DIR/vimrc ~/.vim/vimrc
-
-# Incase we're using regular vim
-ln -fs $SCRIPT_DIR/vimrc ~/.vimrc
-
-# Install minpac
-git clone https://github.com/k-takata/minpac.git \
-    ~/.vim/pack/minpac/opt/minpac
-
-git clone https://github.com/k-takata/minpac.git \
-    ~/.config/nvim/pack/minpac/opt/minpac
+git clone --depth 1 https://github.com/wbthomason/packer.nvim\
+ ~/.local/share/nvim/site/pack/packer/start/packer.nvim
 
 echo "Linking rc files Files"
 ln -fs $SCRIPT_DIR/tmux.conf ~/.tmux.conf
@@ -60,9 +50,3 @@ git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 
 # Setup bin dir for local binaries
 mkdir -p ~/bin
-
-echo "Configuring NVIM"
-zsh -c ". ~/.zshrc && nvim --headless +PackUpdate +qa"
-
-echo "Configuring VIM"
-zsh -c ". ~/.zshrc && vim -Es -u $HOME/.vimrc -c \"call minpac#update(\'\', {\'do\': \'quit\'})\" +qa"
