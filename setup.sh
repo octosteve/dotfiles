@@ -15,7 +15,7 @@ fi
 git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.11.1
 
 mkdir -p ~/.config/nvim
-ln -fs $SCRIPT_DIR/nvim_config/* ~/.config/nvim/
+ln -fs $SCRIPT_DIR/nvim_configs/* ~/.config/nvim/
 
 git clone --depth 1 https://github.com/wbthomason/packer.nvim\
  ~/.local/share/nvim/site/pack/packer/start/packer.nvim
