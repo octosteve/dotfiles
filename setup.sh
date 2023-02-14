@@ -20,6 +20,8 @@ ln -fs $SCRIPT_DIR/nvim_configs/* ~/.config/nvim/
 git clone --depth 1 https://github.com/wbthomason/packer.nvim\
  ~/.local/share/nvim/site/pack/packer/start/packer.nvim
 
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
 echo "Linking rc files Files"
 ln -fs $SCRIPT_DIR/tmux.conf ~/.tmux.conf
 ln -fs $SCRIPT_DIR/zshrc ~/.zshrc
