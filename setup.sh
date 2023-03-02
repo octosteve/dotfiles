@@ -1,10 +1,11 @@
 #!/usr/bin/env zsh
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
-if [ -n "$CODESPACES" ]; then
+# if debian based
+if [ -f /etc/debian_version ]; then
   sudo apt-get update
 
-  sudo apt install -y direnv zsh build-essential ripgrep ruby-dev
+  sudo apt install -y direnv zsh build-essential ripgrep ruby-dev exuberant-ctags
 
 	sudo chsh -s "$(which zsh)" "$(whoami)"
 

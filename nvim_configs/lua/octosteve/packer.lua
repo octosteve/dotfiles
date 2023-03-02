@@ -44,4 +44,8 @@ return require('packer').startup(function(use)
 	use "roman/golden-ratio"
 	use "janko-m/vim-test"
 	use "github/copilot.vim"
+	use 'vim-ruby/vim-ruby'
+	use 'tpope/vim-rails'
+	use 'tpope/vim-rbenv'
+	use 'tpope/vim-bundler'
 end)

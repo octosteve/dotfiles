@@ -174,6 +174,26 @@ _G.packer_plugins = {
     path = "/Users/octosteve/.local/share/nvim/site/pack/packer/start/undotree",
     url = "https://github.com/mbbill/undotree"
   },
+  ["vim-bundler"] = {
+    loaded = true,
+    path = "/Users/octosteve/.local/share/nvim/site/pack/packer/start/vim-bundler",
+    url = "https://github.com/tpope/vim-bundler"
+  },
+  ["vim-rails"] = {
+    loaded = true,
+    path = "/Users/octosteve/.local/share/nvim/site/pack/packer/start/vim-rails",
+    url = "https://github.com/tpope/vim-rails"
+  },
+  ["vim-rbenv"] = {
+    loaded = true,
+    path = "/Users/octosteve/.local/share/nvim/site/pack/packer/start/vim-rbenv",
+    url = "https://github.com/tpope/vim-rbenv"
+  },
+  ["vim-ruby"] = {
+    loaded = true,
+    path = "/Users/octosteve/.local/share/nvim/site/pack/packer/start/vim-ruby",
+    url = "https://github.com/vim-ruby/vim-ruby"
+  },
   ["vim-test"] = {
     loaded = true,
     path = "/Users/octosteve/.local/share/nvim/site/pack/packer/start/vim-test",
