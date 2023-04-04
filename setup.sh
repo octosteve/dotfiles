@@ -13,6 +13,11 @@ if [ -f /etc/debian_version ]; then
   sudo apt install ./nvim-linux64.deb
 fi
 
+git config --global user.name "Steven Nuñez"
+git config --global pull.rebase true
+git config --global core.editor "nvim"
+git config --global push.autoSetupRemote true
+
 git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.11.1
 
 mkdir -p ~/.config/nvim
