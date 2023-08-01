@@ -5,7 +5,6 @@ lsp.preset('recommended')
 lsp.ensure_installed({
 	'eslint',
 	'bashls',
-	'shellharden',
 	'jedi_language_server',
 	'tsserver',
 	'lua_ls',
