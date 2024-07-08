@@ -6,13 +6,26 @@ set -ex
 install_homebrew() {
   if ! command -v brew &>/dev/null; then
     echo "Homebrew is not installed. Installing Homebrew..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   fi
 }
 
 # Function to install packages using Homebrew
 install_homebrew_packages() {
   echo "Installing packages with Homebrew..."
+
+  if [[ "$(uname)" == "Darwin" ]]; then
+    # macOS
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  elif [[ "$(uname -s)" == "Linux" ]]; then
+    # Linux
+    test -d /home/linuxbrew/.linuxbrew && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    test -d ~/.linuxbrew && eval "$(~/.linuxbrew/bin/brew shellenv)"
+  else
+    echo "Unsupported operating system"
+    exit 1
+  fi
+
   brew install direnv zsh ripgrep ctags tmux neovim jq gnupg libyaml wget
 }
 
@@ -26,18 +39,20 @@ install_debian_packages() {
 
 # Function to change the shell to zsh if not already
 change_shell_to_zsh() {
-  if [ "$SHELL" != "/usr/local/bin/zsh" ] && [ "$SHELL" != "/bin/zsh" ]; then
+  local zsh_path
+  zsh_path=$(which zsh)
+
+  if [ -z "$zsh_path" ]; then
+    echo "Error: zsh not found in the system. Please install zsh and try again."
+    exit 1
+  fi
+
+  if [ "$SHELL" != "$zsh_path" ]; then
     echo "Changing shell to zsh..."
-    local zsh_path=""
-    if [ -x /usr/local/bin/zsh ]; then
-      zsh_path="/usr/local/bin/zsh"
-    elif [ -x /bin/zsh ]; then
-      zsh_path="/bin/zsh"
-    else
-      echo "Error: Unable to find a valid zsh executable in known locations. Please install zsh manually and set it as your default shell."
-      exit 1
-    fi
-    chsh -s "$zsh_path" "$(whoami)"
+    sudo chsh "$(id -un)" --shell "$zsh_path"
+    echo "Shell changed to zsh. Please log out and log back in for the changes to take effect."
+  else
+    echo "Shell is already set to zsh."
   fi
 }
 
@@ -53,23 +68,28 @@ install_asdf() {
   source $HOME/.asdf/asdf.sh
 
   # Install plugins and languages (latest versions) using asdf
-  local asdf_plugins=("nodejs" "ruby" "erlang" "elixir" "golang")
-  for plugin in "${asdf_plugins[@]}"; do
-    asdf plugin add "$plugin" "https://github.com/asdf-vm/asdf-$plugin.git"
+  plugins=("github-cli" "nodejs" "ruby" "elixir" "erlang" "golang")
+  for plugin in "${plugins[@]}"; do
+    asdf plugin-add "$plugin" || true
+    # the "|| true" ignore errors if a certain plugin already exists
     asdf install "$plugin" latest
     asdf global "$plugin" latest
   done
+  echo "Installation complete."
 }
 
 # Function to set up configuration files
 setup_config_files() {
   echo "Linking rc files Files"
-  wget -O .zshrc https://git.grml.org/f/grml-etc-core/etc/zsh/zshrc
-  wget -O .tmux.conf https://git.grml.org/f/grml-etc-core/etc/tmux.conf
+  wget -O ~/.zshrc https://git.grml.org/f/grml-etc-core/etc/zsh/zshrc
+  wget -O ~/.tmux.conf https://git.grml.org/f/grml-etc-core/etc/tmux.conf
   ln -fs "$SCRIPT_DIR/tmux.conf.local" ~/.tmux.conf.local
   ln -fs "$SCRIPT_DIR/zshrc.local" ~/.zshrc.local
   mkdir -p ~/.config/nvim
-  ln -fs "$SCRIPT_DIR/nvim_configs/*" ~/.config/nvim/
+  # Iterate over each item in the nvim_configs directory
+  for item in "$SCRIPT_DIR/nvim_configs/"*; do
+    ln -fs "$item" ~/.config/nvim/
+  done
 }
 
 # Function to install FZF
@@ -87,6 +107,14 @@ configure_git() {
   git config --global push.autoSetupRemote true
 }
 
+install_packer() {
+  PACKER_DIR="${HOME}/.local/share/nvim/site/pack/packer/start/packer.nvim"
+  if [ ! -d "$PACKER_DIR" ]; then
+    echo "Installing packer.nvim..."
+    git clone --depth 1 https://github.com/wbthomason/packer.nvim "$PACKER_DIR"
+  fi
+}
+
 # Main script
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 install_homebrew
@@ -97,13 +125,10 @@ install_asdf
 configure_git
 setup_config_files
 install_fzf
+install_packer
 
 # Setup bin dir for local binaries
 mkdir -p ~/bin
-
-# Install Neovim using Homebrew
-echo "Installing Neovim using Homebrew..."
-brew install neovim
 
 # Perform Neovim setup
 nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'
