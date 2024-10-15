@@ -357,7 +357,17 @@ if [ -f $HOME/.asdf/asdf.sh ]; then
 	fpath=(${ASDF_DIR}/completions $fpath)
 fi
 
-test -d /home/linuxbrew/.linuxbrew && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+if [[ "$(uname)" == "Darwin" ]]; then
+  # macOS
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [[ "$(uname -s)" == "Linux" ]]; then
+  # Linux
+  test -d /home/linuxbrew/.linuxbrew && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+  test -d ~/.linuxbrew && eval "$(~/.linuxbrew/bin/brew shellenv)"
+else
+  echo "Unsupported operating system"
+  exit 1
+fi
 if command -v rbenv 1>/dev/null 2>&1; then eval "$(rbenv init -)"; fi
 
 eval "$(direnv hook zsh)"
