@@ -47,4 +47,6 @@ return require('packer').startup(function(use)
 	use 'tpope/vim-rails'
 	use 'tpope/vim-rbenv'
 	use 'tpope/vim-bundler'
+	use 'tpope/vim-fugitive'
+	use 'tpope/vim-rhubarb'
 end)

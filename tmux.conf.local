@@ -1,3 +1,6 @@
+# Undo grml defaults
+unbind C-a
+
 # moving between panes with Prefix h,j,k,l
 bind h select-pane -L
 bind j select-pane -D

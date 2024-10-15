@@ -1,11 +1,6 @@
 vim.g.mapleader = ","
 vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
 
-function TrimWhiteSpace()
-	vim.api.nvim_command("%s/\\s*$//")
-end
-
-vim.keymap.set("n", "<F3>", ":lua TrimWhiteSpace()<CR>", { noremap = true })
 vim.keymap.set("n", "<leader>4", "mzgg=G`z", { noremap = true })
 
 vim.keymap.set("i", "jk", "<ESC>")
@@ -25,7 +20,7 @@ vim.g.mapleader = ","
 vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
 
 function TrimWhiteSpace()
-	vim.api.nvim_command("%s/\\s*$//")
+  vim.api.nvim_command("%s/\\s*$//")
 end
 
 vim.keymap.set("n", "<F3>", ":lua TrimWhiteSpace()<CR>", { noremap = true })
