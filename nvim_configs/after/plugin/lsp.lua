@@ -6,7 +6,6 @@ lsp.ensure_installed({
 	'eslint',
 	'bashls',
 	'jedi_language_server',
-	'tsserver',
 	'lua_ls',
 	'elixirls',
 	'html',

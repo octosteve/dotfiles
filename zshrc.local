@@ -346,30 +346,37 @@ function openDraftPR() {
   gh pr create -db "Closes #$issue_name"
 }
 
-alias vi="nvim"
 alias vim="nvim"
-#
+export EDITOR="nvim"
 
-env | grep -q "CODESPACES" && export EDITOR="nvim"
-# if asdf installed then use it
+# if asdf is installed, source it and ensure ASDF_DIR is set
 if [ -f $HOME/.asdf/asdf.sh ]; then
-	. $HOME/.asdf/asdf.sh
-	fpath=(${ASDF_DIR}/completions $fpath)
+  . $HOME/.asdf/asdf.sh
+  if [ -n "$ASDF_DIR" ]; then
+    fpath=(${ASDF_DIR}/completions $fpath)
+  fi
 fi
 
+# Homebrew setup for macOS/Linux
 if [[ "$(uname)" == "Darwin" ]]; then
-  # macOS
   eval "$(/opt/homebrew/bin/brew shellenv)"
 elif [[ "$(uname -s)" == "Linux" ]]; then
-  # Linux
-  test -d /home/linuxbrew/.linuxbrew && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-  test -d ~/.linuxbrew && eval "$(~/.linuxbrew/bin/brew shellenv)"
+  if [ -d /home/linuxbrew/.linuxbrew ]; then
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+  elif [ -d ~/.linuxbrew ]; then
+    eval "$(~/.linuxbrew/bin/brew shellenv)"
+  fi
 else
   echo "Unsupported operating system"
   exit 1
 fi
-if command -v rbenv 1>/dev/null 2>&1; then eval "$(rbenv init -)"; fi
 
+# Initialize rbenv if installed
+if command -v rbenv &> /dev/null; then
+  eval "$(rbenv init -)"
+fi
+
+# Initialize direnv if installed
 eval "$(direnv hook zsh)"
 
 # Helper to see if a command exists
@@ -378,18 +385,19 @@ command_exists () {
 }
 
 export FZF_DEFAULT_COMMAND='rg --files'
-if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
-    tmux attach -t default || tmux new -s default
+#
+# Automatically attach or start tmux if not already in a session
+if command_exists tmux && [ -z "$TMUX" ]; then
+  tmux attach -t default || tmux new -s default
 fi
 
-autoload -Uz compinit && compinit
-export ERL_AFLAGS="-kernel shell_history enabled"
+autoload -Uz compinit && compinit -C -d "${COMPDUMPFILE}"
 
-export PS1="\[\033[36m\]\u\[\033[m\]@\[\033[32m\]\h:\[\033[33;1m\]\w\[\033[m\]\$ "
+export ERL_AFLAGS="-kernel shell_history enabled"
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 export LANGUAGE=en_US.UTF-8
-export CLICOLOR=1
-export LSCOLORS=ExFxBxDxCxegedabagacad
 export TERM="screen-256color"
+export PATH="$HOME/.local/bin:$PATH"
+
 alias ls='ls -GFh'
