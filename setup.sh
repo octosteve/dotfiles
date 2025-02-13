@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-set -ex
+set -e
 
 # Function to install Homebrew if not installed
 install_homebrew() {
@@ -58,21 +58,13 @@ change_shell_to_zsh() {
 
 # Function to install asdf and its plugins
 install_asdf() {
-  # Determine the latest version of asdf
-  local LATEST_ASDF_VERSION
-  LATEST_ASDF_VERSION=$(curl -s https://api.github.com/repos/asdf-vm/asdf/releases/latest | jq -r '.tag_name')
-
-  # Install asdf with the latest version
-  echo "Installing asdf (latest version: $LATEST_ASDF_VERSION)"
-  git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch "$LATEST_ASDF_VERSION"
-  source $HOME/.asdf/asdf.sh
-
+  go install github.com/asdf-vm/asdf/cmd/asdf@latest
   # Install plugins and languages (latest versions) using asdf
   plugins=("github-cli" "nodejs" "ruby" "elixir" "erlang" "golang")
   for plugin in "${plugins[@]}"; do
-    asdf plugin-add "$plugin" || true
     # the "|| true" ignore errors if a certain plugin already exists
-    asdf install "$plugin" latest
+    asdf plugin-add "$plugin" || true
+    asdf install "$plugin" latest || true
     asdf global "$plugin" latest
   done
   echo "Installation complete."
@@ -81,6 +73,12 @@ install_asdf() {
 # Function to set up configuration files
 setup_config_files() {
   echo "Linking rc files Files"
+  if [ -f ~/.zshrc ]; then
+    cp ~/.zshrc ~/.zshrc.bak
+  fi
+  if [ -f ~/.tmux.conf ]; then
+    cp ~/.tmux.conf ~/.tmux.conf.bak
+  fi
   wget -O ~/.zshrc https://git.grml.org/f/grml-etc-core/etc/zsh/zshrc
   wget -O ~/.tmux.conf https://git.grml.org/f/grml-etc-core/etc/tmux.conf
   ln -fs "$SCRIPT_DIR/tmux.conf.local" ~/.tmux.conf.local
