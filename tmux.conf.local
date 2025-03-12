@@ -1,5 +1,6 @@
 # Undo grml defaults
 unbind C-a
+set -g escape-time 10
 
 # moving between panes with Prefix h,j,k,l
 bind h select-pane -L
