@@ -63,7 +63,7 @@ install_asdf() {
   plugins=("github-cli" "nodejs" "ruby" "elixir" "erlang" "golang")
   for plugin in "${plugins[@]}"; do
     # the "|| true" ignore errors if a certain plugin already exists
-    asdf plugin-add "$plugin" || true
+    asdf plugin add "$plugin" || true
     asdf install "$plugin" latest || true
     asdf global "$plugin" latest
   done
