@@ -65,7 +65,7 @@ install_asdf() {
     # the "|| true" ignore errors if a certain plugin already exists
     asdf plugin add "$plugin" || true
     asdf install "$plugin" latest || true
-    asdf global "$plugin" latest
+    asdf set -u "$plugin" latest
   done
   echo "Installation complete."
 }
@@ -92,6 +92,10 @@ setup_config_files() {
 
 # Function to install FZF
 install_fzf() {
+  if [ -d ~/.fzf ]; then
+    echo "FZF is already installed."
+    return
+  fi
   echo "Installing FZF"
   git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
   ~/.fzf/install --all
