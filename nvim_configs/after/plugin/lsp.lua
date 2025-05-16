@@ -1,82 +1,71 @@
-local lsp = require('lsp-zero')
+-- Install the following plugins if you haven't:
+--   'neovim/nvim-lspconfig'
+--   'hrsh7th/nvim-cmp'
+--   'hrsh7th/cmp-nvim-lsp'
 
-lsp.preset('recommended')
+local lspconfig = require('lspconfig')
 
-lsp.ensure_installed({
-	'eslint',
-	'bashls',
-	'jedi_language_server',
-	'lua_ls',
-	'elixirls',
-	'html',
-	'solargraph',
-	'tailwindcss',
-	'cssls',
-	'dockerls',
-	'emmet_ls',
-	'gopls',
-	'golangci_lint_ls',
-	'jsonls',
-	'marksman',
-	'vimls',
-	'yamlls',
-})
-
--- Fix Undefined global 'vim'
-lsp.configure('sumneko_lua', {
-	settings = {
-		Lua = {
-			diagnostics = {
-				globals = { 'vim' }
-			}
-		}
-	}
-})
-
+-- Setup nvim-cmp
 local cmp = require('cmp')
-local cmp_select = { behavior = cmp.SelectBehavior.Select }
-
-local cmp_mappings = lsp.defaults.cmp_mappings({
-	['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
-	['<C-n>'] = cmp.mapping.select_next_item(cmp_select),
-	['<C-y>'] = cmp.mapping.confirm({ select = true }),
-	['<C-Space>'] = cmp.mapping.complete(),
+cmp.setup({
+  mapping = {
+    ['<C-p>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }),
+    ['<C-n>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }),
+    ['<C-y>'] = cmp.mapping.confirm({ select = true }),
+    ['<C-Space>'] = cmp.mapping.complete(),
+  },
+  sources = {
+    { name = 'nvim_lsp' },
+    -- add more sources as needed
+  },
 })
 
-cmp_mappings['<Tab>'] = nil
-cmp_mappings['<S-Tab>'] = nil
-
-lsp.setup_nvim_cmp({
-	mapping = cmp_mappings
-})
-
-lsp.set_preferences({
-	suggest_lsp_servers = false,
-	sign_icons = {
-		error = 'E',
-		warn = 'W',
-		hint = 'H',
-		info = 'I'
-	}
-})
-
-lsp.on_attach(function(client, bufnr)
-	local opts = { buffer = bufnr, remap = false }
-
-	vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, opts)
-	vim.keymap.set("n", "K", function() vim.lsp.buf.hover() end, opts)
-	vim.keymap.set("n", "<leader>vws", function() vim.lsp.buf.workspace_symbol() end, opts)
-	vim.keymap.set("n", "<leader>vd", function() vim.diagnostic.open_float() end, opts)
-	vim.keymap.set("n", "[d", function() vim.diagnostic.goto_next() end, opts)
-	vim.keymap.set("n", "]d", function() vim.diagnostic.goto_prev() end, opts)
-	vim.keymap.set("n", "<leader>vca", function() vim.lsp.buf.code_action() end, opts)
-	vim.keymap.set("n", "<leader>vrr", function() vim.lsp.buf.references() end, opts)
-	vim.keymap.set("n", "<leader>vrn", function() vim.lsp.buf.rename() end, opts)
-	vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, opts)
-end)
-
-lsp.setup()
+-- Diagnostic sign icons
+local signs = { Error = 'E', Warn = 'W', Hint = 'H', Info = 'I' }
+for type, icon in pairs(signs) do
+  local hl = "DiagnosticSign" .. type
+  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
+end
 
 vim.diagnostic.config({
-	virtual_text = true
+  virtual_text = true,
 })
+
+-- Keymaps for LSP
+local on_attach = function(client, bufnr)
+  local opts = { buffer = bufnr, remap = false }
+  local map = vim.keymap.set
+  map("n", "gd", vim.lsp.buf.definition, opts)
+  map("n", "K", vim.lsp.buf.hover, opts)
+  map("n", "<leader>vws", vim.lsp.buf.workspace_symbol, opts)
+  map("n", "<leader>vd", vim.diagnostic.open_float, opts)
+  map("n", "[d", vim.diagnostic.goto_next, opts)
+  map("n", "]d", vim.diagnostic.goto_prev, opts)
+  map("n", "<leader>vca", vim.lsp.buf.code_action, opts)
+  map("n", "<leader>vrr", vim.lsp.buf.references, opts)
+  map("n", "<leader>vrn", vim.lsp.buf.rename, opts)
+  map("i", "<C-h>", vim.lsp.buf.signature_help, opts)
+end
+
+-- List of servers
+local servers = {
+  'eslint', 'bashls', 'jedi_language_server', 'lua_ls', 'elixirls',
+  'html', 'solargraph', 'tailwindcss', 'cssls', 'dockerls', 'emmet_ls',
+  'gopls', 'golangci_lint_ls', 'jsonls', 'marksman', 'vimls', 'yamlls'
+}
+
+-- Setup servers
+for _, server in ipairs(servers) do
+  local opts = { on_attach = on_attach, capabilities = require('cmp_nvim_lsp').default_capabilities() }
+  -- Custom settings for lua_ls
+  if server == 'lua_ls' or server == 'sumneko_lua' then
+    opts.settings = {
+      Lua = {
+        diagnostics = {
+          globals = { 'vim' }
+        }
+      }
+    }
+  end
+  lspconfig[server].setup(opts)
+end

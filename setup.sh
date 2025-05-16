@@ -67,6 +67,9 @@ install_asdf() {
     asdf install "$plugin" latest || true
     asdf set -u "$plugin" latest
   done
+  mkdir -p "${ASDF_DATA_DIR:-$HOME/.asdf}/completions"
+  asdf completion zsh > "${ASDF_DATA_DIR:-$HOME/.asdf}/completions/_asdf"
+
   echo "Installation complete."
 }
 
