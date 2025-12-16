@@ -1,4 +1,4 @@
 require("octosteve.remap")
 require("octosteve.set")
-require("octosteve.packer")
+require("octosteve.lazy")
 require("octosteve.functions")

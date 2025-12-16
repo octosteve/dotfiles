@@ -349,11 +349,6 @@ function openDraftPR() {
 alias vim="nvim"
 export EDITOR="nvim"
 
-export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
-
-# append completions to fpath
-fpath=(${ASDF_DATA_DIR:-$HOME/.asdf}/completions $fpath)
-
 # Homebrew setup for macOS/Linux
 if [[ "$(uname)" == "Darwin" ]]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
@@ -363,9 +358,30 @@ elif [[ "$(uname -s)" == "Linux" ]]; then
   elif [ -d ~/.linuxbrew ]; then
     eval "$(~/.linuxbrew/bin/brew shellenv)"
   fi
-else
-  echo "Unsupported operating system"
-  exit 1
+fi
+
+# Initialize asdf - support Homebrew installations
+if command -v brew &> /dev/null && [ -f "$(brew --prefix asdf)/libexec/asdf.sh" ]; then
+  # Homebrew installation
+  . "$(brew --prefix asdf)/libexec/asdf.sh"
+fi
+
+# Add asdf shims to PATH (for go install or binary installations)
+if [ -d "${ASDF_DATA_DIR:-$HOME/.asdf}/shims" ]; then
+  export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
+fi
+
+# append completions to fpath for asdf
+if command -v brew &> /dev/null && [ -d "$(brew --prefix asdf)/completions" ]; then
+  fpath=($(brew --prefix asdf)/completions $fpath)
+elif command -v asdf &> /dev/null; then
+  # Generate completions if asdf is available but completions aren't set up
+  local asdf_completion_dir="${ASDF_DATA_DIR:-$HOME/.asdf}/completions"
+  mkdir -p "$asdf_completion_dir"
+  if [ ! -f "$asdf_completion_dir/_asdf" ] && command -v asdf &> /dev/null; then
+    asdf completion zsh > "$asdf_completion_dir/_asdf" 2>/dev/null || true
+  fi
+  fpath=($asdf_completion_dir $fpath)
 fi
 
 # Initialize rbenv if installed
@@ -384,7 +400,8 @@ command_exists () {
 export FZF_DEFAULT_COMMAND='rg --files'
 #
 # Automatically attach or start tmux if not already in a session
-if command_exists tmux && [ -z "$TMUX" ]; then
+# Skip in Codespaces or other non-interactive environments
+if command_exists tmux && [ -z "$TMUX" ] && [ -z "$CODESPACES" ] && [ -z "$VSCODE_INJECTION" ]; then
   tmux attach -t default || tmux new -s default
 fi
 
