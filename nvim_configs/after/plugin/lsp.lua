@@ -3,15 +3,13 @@
 --   'hrsh7th/nvim-cmp'
 --   'hrsh7th/cmp-nvim-lsp'
 
--- Use the new lspconfig API for nvim 0.11+
-local lspconfig_ok, lspconfig = pcall(require, 'lspconfig')
-if not lspconfig_ok then
-  vim.notify('nvim-lspconfig not found', vim.log.levels.ERROR)
+-- Setup nvim-cmp
+local cmp_ok, cmp = pcall(require, 'cmp')
+if not cmp_ok then
+  vim.notify('nvim-cmp not found', vim.log.levels.WARN)
   return
 end
 
--- Setup nvim-cmp
-local cmp = require('cmp')
 cmp.setup({
   mapping = {
     ['<C-p>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }),
@@ -52,25 +50,71 @@ local on_attach = function(client, bufnr)
   map("i", "<C-h>", vim.lsp.buf.signature_help, opts)
 end
 
--- List of servers
-local servers = {
-  'eslint', 'bashls', 'jedi_language_server', 'lua_ls', 'elixirls',
-  'html', 'solargraph', 'tailwindcss', 'cssls', 'dockerls', 'emmet_ls',
-  'gopls', 'golangci_lint_ls', 'jsonls', 'marksman', 'vimls', 'yamlls'
-}
+-- Get capabilities
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
--- Setup servers
-for _, server in ipairs(servers) do
-  local opts = { on_attach = on_attach, capabilities = require('cmp_nvim_lsp').default_capabilities() }
-  -- Custom settings for lua_ls
-  if server == 'lua_ls' or server == 'sumneko_lua' then
-    opts.settings = {
+-- List of servers and their configurations
+local servers = {
+  eslint = {},
+  bashls = {},
+  jedi_language_server = {},
+  lua_ls = {
+    settings = {
       Lua = {
         diagnostics = {
           globals = { 'vim' }
         }
       }
     }
+  },
+  elixirls = {},
+  html = {},
+  solargraph = {},
+  tailwindcss = {},
+  cssls = {},
+  dockerls = {},
+  emmet_ls = {},
+  gopls = {},
+  golangci_lint_ls = {},
+  jsonls = {},
+  marksman = {},
+  vimls = {},
+  yamlls = {}
+}
+
+-- Use vim.lsp.config for nvim 0.11+ (new API)
+-- Falls back to lspconfig for older versions
+if vim.lsp.config then
+  -- New API (nvim 0.11+)
+  for server_name, server_config in pairs(servers) do
+    local config = vim.tbl_deep_extend('force', {
+      capabilities = capabilities,
+      on_attach = on_attach,
+    }, server_config)
+    
+    -- Register the LSP server configuration
+    pcall(function()
+      vim.lsp.config[server_name] = config
+      -- Enable the server
+      vim.lsp.enable(server_name)
+    end)
   end
-  lspconfig[server].setup(opts)
+else
+  -- Fall back to lspconfig for older nvim versions
+  local lspconfig_ok, lspconfig = pcall(require, 'lspconfig')
+  if not lspconfig_ok then
+    vim.notify('nvim-lspconfig not found and nvim version < 0.11', vim.log.levels.WARN)
+    return
+  end
+  
+  for server_name, server_config in pairs(servers) do
+    local config = vim.tbl_deep_extend('force', {
+      capabilities = capabilities,
+      on_attach = on_attach,
+    }, server_config)
+    
+    pcall(function()
+      lspconfig[server_name].setup(config)
+    end)
+  end
 end
