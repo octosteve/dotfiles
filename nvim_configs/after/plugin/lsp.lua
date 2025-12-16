@@ -1,8 +1,4 @@
--- Install the following plugins if you haven't:
---   'neovim/nvim-lspconfig'
---   'hrsh7th/nvim-cmp'
---   'hrsh7th/cmp-nvim-lsp'
-
+-- LSP configuration for nvim 0.11+
 -- Setup nvim-cmp
 local cmp_ok, cmp = pcall(require, 'cmp')
 if not cmp_ok then
@@ -19,7 +15,6 @@ cmp.setup({
   },
   sources = {
     { name = 'nvim_lsp' },
-    -- add more sources as needed
   },
 })
 
@@ -82,39 +77,15 @@ local servers = {
   yamlls = {}
 }
 
--- Use vim.lsp.config for nvim 0.11+ (new API)
--- Falls back to lspconfig for older versions
-if vim.lsp.config then
-  -- New API (nvim 0.11+)
-  for server_name, server_config in pairs(servers) do
-    local config = vim.tbl_deep_extend('force', {
-      capabilities = capabilities,
-      on_attach = on_attach,
-    }, server_config)
-    
-    -- Register the LSP server configuration
-    pcall(function()
-      vim.lsp.config[server_name] = config
-      -- Enable the server
-      vim.lsp.enable(server_name)
-    end)
-  end
-else
-  -- Fall back to lspconfig for older nvim versions
-  local lspconfig_ok, lspconfig = pcall(require, 'lspconfig')
-  if not lspconfig_ok then
-    vim.notify('nvim-lspconfig not found and nvim version < 0.11', vim.log.levels.WARN)
-    return
-  end
+-- Configure LSP servers using vim.lsp.config (nvim 0.11+)
+for server_name, server_config in pairs(servers) do
+  local config = vim.tbl_deep_extend('force', {
+    capabilities = capabilities,
+    on_attach = on_attach,
+  }, server_config)
   
-  for server_name, server_config in pairs(servers) do
-    local config = vim.tbl_deep_extend('force', {
-      capabilities = capabilities,
-      on_attach = on_attach,
-    }, server_config)
-    
-    pcall(function()
-      lspconfig[server_name].setup(config)
-    end)
-  end
+  pcall(function()
+    vim.lsp.config[server_name] = config
+    vim.lsp.enable(server_name)
+  end)
 end

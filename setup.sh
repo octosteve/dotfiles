@@ -69,11 +69,10 @@ install_debian_packages() {
   fi
 }
 
-# Function to change the shell to zsh if not already
+# Function to change the shell to zsh
 change_shell_to_zsh() {
-  # Skip in non-interactive environments like Codespaces or CI
   if [ -n "$CODESPACES" ] || [ -n "$CI" ]; then
-    echo "Skipping shell change in non-interactive environment (Codespaces/CI)."
+    echo "Skipping shell change in non-interactive environment."
     return
   fi
 
@@ -81,22 +80,21 @@ change_shell_to_zsh() {
   zsh_path=$(which zsh)
 
   if [ -z "$zsh_path" ]; then
-    echo "Error: zsh not found in the system. Please install zsh and try again."
+    echo "Error: zsh not found. Please install zsh and try again."
     exit 1
   fi
 
   if [ "$SHELL" != "$zsh_path" ]; then
     echo "Changing shell to zsh..."
-    # Use chsh with explicit username for better compatibility
     if command -v chsh &>/dev/null; then
       chsh -s "$zsh_path" "$(whoami)" || {
         echo "Note: Could not change shell automatically. You can change it manually with:"
         echo "  chsh -s $zsh_path"
       }
     else
-      echo "Note: chsh command not available. You can change your shell manually."
+      echo "Note: chsh command not available."
     fi
-    echo "Shell changed to zsh. Please log out and log back in for the changes to take effect."
+    echo "Shell changed. Please log out and log back in for changes to take effect."
   else
     echo "Shell is already set to zsh."
   fi
@@ -104,36 +102,27 @@ change_shell_to_zsh() {
 
 # Function to install asdf and its plugins
 install_asdf() {
-  # Check if asdf is already available
   if ! command -v asdf &>/dev/null; then
     echo "Installing asdf..."
     
     if command -v brew &>/dev/null; then
-      # Install via Homebrew (recommended method)
       brew install asdf
     elif command -v go &>/dev/null; then
-      # Install via go install if Go is available
       echo "Installing asdf via go install..."
       go install github.com/asdf-vm/asdf/cmd/asdf@latest
-      # Add GOPATH/bin to PATH if not already there
       export PATH="${GOPATH:-$HOME/go}/bin:$PATH"
     else
-      # Download pre-compiled binary for systems without brew or go
       echo "Downloading pre-compiled asdf binary..."
       ASDF_VERSION="v0.18.0"
       ARCH="$(uname -m)"
       OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
       
-      # Map architecture names
       case "$ARCH" in
         x86_64) ARCH="amd64" ;;
         aarch64|arm64) ARCH="arm64" ;;
       esac
       
-      # Create local bin directory if it doesn't exist
       mkdir -p "$HOME/.local/bin"
-      
-      # Download and install
       DOWNLOAD_URL="https://github.com/asdf-vm/asdf/releases/download/${ASDF_VERSION}/asdf_${ASDF_VERSION}_${OS}_${ARCH}.tar.gz"
       echo "Downloading from: $DOWNLOAD_URL"
       
@@ -150,9 +139,7 @@ install_asdf() {
     echo "asdf is already installed."
   fi
   
-  # Ensure asdf is available in PATH
   if command -v brew &>/dev/null && command -v asdf &>/dev/null; then
-    # Homebrew installation - source the shell integration
     if [ -f "$(brew --prefix asdf)/libexec/asdf.sh" ]; then
       . "$(brew --prefix asdf)/libexec/asdf.sh"
     fi
@@ -161,15 +148,13 @@ install_asdf() {
     return 1
   fi
   
-  # Install plugins and languages (latest versions) using asdf
+  # Install plugins and languages using asdf
   plugins=("github-cli" "nodejs" "ruby" "elixir" "erlang" "golang")
   for plugin in "${plugins[@]}"; do
     echo "Processing asdf plugin: $plugin"
-    # Add plugin if not already added
     if ! asdf plugin list | grep -q "^${plugin}$"; then
       asdf plugin add "$plugin" || echo "Warning: Could not add plugin $plugin"
     fi
-    # Install latest version
     if asdf install "$plugin" latest; then
       asdf global "$plugin" latest
     else
@@ -184,7 +169,7 @@ install_asdf() {
 
 # Function to set up configuration files
 setup_config_files() {
-  echo "Linking rc files Files"
+  echo "Linking configuration files"
   if [ -f ~/.zshrc ]; then
     cp ~/.zshrc ~/.zshrc.bak
   fi
@@ -196,7 +181,6 @@ setup_config_files() {
   ln -fs "$SCRIPT_DIR/tmux.conf.local" ~/.tmux.conf.local
   ln -fs "$SCRIPT_DIR/zshrc.local" ~/.zshrc.local
   mkdir -p ~/.config/nvim
-  # Iterate over each item in the nvim_configs directory
   for item in "$SCRIPT_DIR/nvim_configs/"*; do
     ln -fs "$item" ~/.config/nvim/
   done
@@ -215,15 +199,13 @@ install_fzf() {
 
 # Function to configure Git settings
 configure_git() {
-  # Only set user.name if not already configured
   if [ -z "$(git config --global user.name)" ]; then
-    echo "Git user.name not set. Please configure it manually with:"
+    echo "Git user.name not set. Configure with:"
     echo "  git config --global user.name \"Your Name\""
   fi
   
-  # Only set user.email if not already configured
   if [ -z "$(git config --global user.email)" ]; then
-    echo "Git user.email not set. Please configure it manually with:"
+    echo "Git user.email not set. Configure with:"
     echo "  git config --global user.email \"your.email@example.com\""
   fi
   
@@ -243,7 +225,7 @@ install_lazy() {
 install_tpm() {
   TPM_DIR="${HOME}/.tmux/plugins/tpm"
   if [ ! -d "$TPM_DIR" ]; then
-    echo "Installing TPM (Tmux Plugin Manager)..."
+    echo "Installing TPM..."
     git clone https://github.com/tmux-plugins/tpm "$TPM_DIR"
   fi
 }
@@ -266,12 +248,10 @@ install_fzf
 install_lazy
 install_tpm
 
-# Setup bin dir for local binaries
 mkdir -p ~/bin
 
-# Perform Neovim setup with lazy.nvim
 echo "Syncing Neovim plugins..."
 nvim --headless "+Lazy! sync" +qa
 
 echo ""
-echo "Setup complete! Please restart your shell or run: source ~/.zshrc"
+echo "Setup complete! Restart your shell or run: source ~/.zshrc"
