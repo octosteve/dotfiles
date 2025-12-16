@@ -87,9 +87,9 @@ change_shell_to_zsh() {
 
   if [ "$SHELL" != "$zsh_path" ]; then
     echo "Changing shell to zsh..."
-    # Use chsh without sudo for better compatibility
+    # Use chsh with explicit username for better compatibility
     if command -v chsh &>/dev/null; then
-      chsh -s "$zsh_path" || {
+      chsh -s "$zsh_path" "$(whoami)" || {
         echo "Note: Could not change shell automatically. You can change it manually with:"
         echo "  chsh -s $zsh_path"
       }
