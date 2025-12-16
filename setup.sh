@@ -116,10 +116,17 @@ install_asdf() {
   # Install plugins and languages (latest versions) using asdf
   plugins=("github-cli" "nodejs" "ruby" "elixir" "erlang" "golang")
   for plugin in "${plugins[@]}"; do
-    # the "|| true" ignore errors if a certain plugin already exists
-    asdf plugin add "$plugin" 2>/dev/null || true
-    asdf install "$plugin" latest || true
-    asdf global "$plugin" latest || true
+    echo "Processing asdf plugin: $plugin"
+    # Add plugin if not already added
+    if ! asdf plugin list | grep -q "^${plugin}$"; then
+      asdf plugin add "$plugin" || echo "Warning: Could not add plugin $plugin"
+    fi
+    # Install latest version
+    if asdf install "$plugin" latest; then
+      asdf global "$plugin" latest
+    else
+      echo "Warning: Could not install $plugin latest version"
+    fi
   done
   mkdir -p "${ASDF_DATA_DIR:-$HOME/.asdf}/completions"
   asdf completion zsh > "${ASDF_DATA_DIR:-$HOME/.asdf}/completions/_asdf"
