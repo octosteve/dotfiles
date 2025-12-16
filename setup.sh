@@ -106,35 +106,59 @@ change_shell_to_zsh() {
 install_asdf() {
   # Check if asdf is already available
   if ! command -v asdf &>/dev/null; then
-    echo "Installing asdf via package manager..."
+    echo "Installing asdf..."
     
     if command -v brew &>/dev/null; then
-      # Install via Homebrew
+      # Install via Homebrew (recommended method)
       brew install asdf
-    elif command -v apt-get &>/dev/null; then
-      # Install via apt on Debian/Ubuntu
-      # asdf is not in default apt repos, so we need to add it manually
-      if [ ! -f /usr/local/bin/asdf ]; then
-        sudo apt-get install -y curl git
-        git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.1
-        echo "Note: asdf installed to ~/.asdf (not available in apt repos)"
-      fi
+    elif command -v go &>/dev/null; then
+      # Install via go install if Go is available
+      echo "Installing asdf via go install..."
+      go install github.com/asdf-vm/asdf/cmd/asdf@latest
+      # Add GOPATH/bin to PATH if not already there
+      export PATH="${GOPATH:-$HOME/go}/bin:$PATH"
     else
-      echo "Warning: No supported package manager found. Installing asdf manually..."
-      git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.1
+      # Download pre-compiled binary for systems without brew or go
+      echo "Downloading pre-compiled asdf binary..."
+      ASDF_VERSION="v0.18.0"
+      ARCH="$(uname -m)"
+      OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
+      
+      # Map architecture names
+      case "$ARCH" in
+        x86_64) ARCH="amd64" ;;
+        aarch64|arm64) ARCH="arm64" ;;
+      esac
+      
+      # Create local bin directory if it doesn't exist
+      mkdir -p "$HOME/.local/bin"
+      
+      # Download and install
+      DOWNLOAD_URL="https://github.com/asdf-vm/asdf/releases/download/${ASDF_VERSION}/asdf_${ASDF_VERSION}_${OS}_${ARCH}.tar.gz"
+      echo "Downloading from: $DOWNLOAD_URL"
+      
+      if curl -fsSL "$DOWNLOAD_URL" | tar -xz -C "$HOME/.local/bin" asdf 2>/dev/null; then
+        chmod +x "$HOME/.local/bin/asdf"
+        export PATH="$HOME/.local/bin:$PATH"
+        echo "asdf binary installed to ~/.local/bin"
+      else
+        echo "Error: Failed to download asdf binary. Please install manually."
+        return 1
+      fi
     fi
   else
     echo "asdf is already installed."
   fi
   
-  # Source asdf - check multiple possible locations
-  if command -v brew &>/dev/null && [ -f "$(brew --prefix asdf)/libexec/asdf.sh" ]; then
-    # Homebrew installation
-    . "$(brew --prefix asdf)/libexec/asdf.sh"
-  elif [ -f "$HOME/.asdf/asdf.sh" ]; then
-    # Manual installation
-    export ASDF_DIR="${ASDF_DATA_DIR:-$HOME/.asdf}"
-    . "$HOME/.asdf/asdf.sh"
+  # Ensure asdf is available in PATH
+  if command -v brew &>/dev/null && command -v asdf &>/dev/null; then
+    # Homebrew installation - source the shell integration
+    if [ -f "$(brew --prefix asdf)/libexec/asdf.sh" ]; then
+      . "$(brew --prefix asdf)/libexec/asdf.sh"
+    fi
+  elif ! command -v asdf &>/dev/null; then
+    echo "Error: asdf installation failed or not in PATH"
+    return 1
   fi
   
   # Install plugins and languages (latest versions) using asdf
