@@ -104,14 +104,38 @@ change_shell_to_zsh() {
 
 # Function to install asdf and its plugins
 install_asdf() {
-  if [ ! -d "$HOME/.asdf" ]; then
-    echo "Installing asdf..."
-    git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.1
+  # Check if asdf is already available
+  if ! command -v asdf &>/dev/null; then
+    echo "Installing asdf via package manager..."
+    
+    if command -v brew &>/dev/null; then
+      # Install via Homebrew
+      brew install asdf
+    elif command -v apt-get &>/dev/null; then
+      # Install via apt on Debian/Ubuntu
+      # asdf is not in default apt repos, so we need to add it manually
+      if [ ! -f /usr/local/bin/asdf ]; then
+        sudo apt-get install -y curl git
+        git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.1
+        echo "Note: asdf installed to ~/.asdf (not available in apt repos)"
+      fi
+    else
+      echo "Warning: No supported package manager found. Installing asdf manually..."
+      git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.1
+    fi
+  else
+    echo "asdf is already installed."
   fi
   
-  # Source asdf
-  export ASDF_DIR="${ASDF_DATA_DIR:-$HOME/.asdf}"
-  . "$HOME/.asdf/asdf.sh"
+  # Source asdf - check multiple possible locations
+  if command -v brew &>/dev/null && [ -f "$(brew --prefix asdf)/libexec/asdf.sh" ]; then
+    # Homebrew installation
+    . "$(brew --prefix asdf)/libexec/asdf.sh"
+  elif [ -f "$HOME/.asdf/asdf.sh" ]; then
+    # Manual installation
+    export ASDF_DIR="${ASDF_DATA_DIR:-$HOME/.asdf}"
+    . "$HOME/.asdf/asdf.sh"
+  fi
   
   # Install plugins and languages (latest versions) using asdf
   plugins=("github-cli" "nodejs" "ruby" "elixir" "erlang" "golang")

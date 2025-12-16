@@ -20,7 +20,7 @@ cd ~/dotfiles
 
 ### Development Tools
 - **Homebrew** package manager (macOS and Linux)
-- **asdf** version manager for multiple languages:
+- **asdf** version manager (installed via Homebrew when available, otherwise manual install) for multiple languages:
   - Node.js
   - Ruby
   - Elixir/Erlang

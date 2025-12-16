@@ -349,11 +349,6 @@ function openDraftPR() {
 alias vim="nvim"
 export EDITOR="nvim"
 
-export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
-
-# append completions to fpath
-fpath=(${ASDF_DATA_DIR:-$HOME/.asdf}/completions $fpath)
-
 # Homebrew setup for macOS/Linux
 if [[ "$(uname)" == "Darwin" ]]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
@@ -366,6 +361,22 @@ elif [[ "$(uname -s)" == "Linux" ]]; then
 else
   echo "Unsupported operating system"
   exit 1
+fi
+
+# Initialize asdf - support both Homebrew and manual installations
+if command -v brew &> /dev/null && [ -f "$(brew --prefix asdf)/libexec/asdf.sh" ]; then
+  # Homebrew installation
+  . "$(brew --prefix asdf)/libexec/asdf.sh"
+elif [ -f "$HOME/.asdf/asdf.sh" ]; then
+  # Manual installation
+  . "$HOME/.asdf/asdf.sh"
+fi
+
+# append completions to fpath for asdf
+if command -v brew &> /dev/null && [ -d "$(brew --prefix asdf)/completions" ]; then
+  fpath=($(brew --prefix asdf)/completions $fpath)
+elif [ -d "${ASDF_DATA_DIR:-$HOME/.asdf}/completions" ]; then
+  fpath=(${ASDF_DATA_DIR:-$HOME/.asdf}/completions $fpath)
 fi
 
 # Initialize rbenv if installed
