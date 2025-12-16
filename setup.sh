@@ -156,7 +156,7 @@ install_asdf() {
       asdf plugin add "$plugin" || echo "Warning: Could not add plugin $plugin"
     fi
     if asdf install "$plugin" latest; then
-      asdf global "$plugin" latest
+      asdf set -u "$plugin" latest
     else
       echo "Warning: Could not install $plugin latest version"
     fi
