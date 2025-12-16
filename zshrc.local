@@ -384,7 +384,8 @@ command_exists () {
 export FZF_DEFAULT_COMMAND='rg --files'
 #
 # Automatically attach or start tmux if not already in a session
-if command_exists tmux && [ -z "$TMUX" ]; then
+# Skip in Codespaces or other non-interactive environments
+if command_exists tmux && [ -z "$TMUX" ] && [ -z "$CODESPACES" ] && [ -z "$VSCODE_INJECTION" ]; then
   tmux attach -t default || tmux new -s default
 fi
 
