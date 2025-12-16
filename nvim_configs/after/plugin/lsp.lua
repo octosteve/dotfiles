@@ -3,7 +3,12 @@
 --   'hrsh7th/nvim-cmp'
 --   'hrsh7th/cmp-nvim-lsp'
 
-local lspconfig = require('lspconfig')
+-- Use the new lspconfig API for nvim 0.11+
+local lspconfig_ok, lspconfig = pcall(require, 'lspconfig')
+if not lspconfig_ok then
+  vim.notify('nvim-lspconfig not found', vim.log.levels.ERROR)
+  return
+end
 
 -- Setup nvim-cmp
 local cmp = require('cmp')

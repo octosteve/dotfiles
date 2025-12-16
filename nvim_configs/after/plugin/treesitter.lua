@@ -1,4 +1,11 @@
-require 'nvim-treesitter.configs'.setup {
+-- Use the new treesitter API
+local status_ok, nvim_treesitter = pcall(require, 'nvim-treesitter.configs')
+if not status_ok then
+  vim.notify('nvim-treesitter not found', vim.log.levels.WARN)
+  return
+end
+
+nvim_treesitter.setup {
 	-- A list of parser names, or "all" (the four listed parsers should always be installed)
 	ensure_installed = { "elixir", "ruby", "javascript", "typescript", "lua", "vim", "bash"},
 

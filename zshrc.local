@@ -358,9 +358,6 @@ elif [[ "$(uname -s)" == "Linux" ]]; then
   elif [ -d ~/.linuxbrew ]; then
     eval "$(~/.linuxbrew/bin/brew shellenv)"
   fi
-else
-  echo "Unsupported operating system"
-  exit 1
 fi
 
 # Initialize asdf - support Homebrew installations
