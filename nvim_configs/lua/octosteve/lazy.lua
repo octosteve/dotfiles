@@ -24,10 +24,13 @@ require("lazy").setup({
   -- Color scheme
   "EdenEast/nightfox.nvim",
 
-  -- Treesitter for better syntax highlighting
+  -- Treesitter for parser installation
   {
     'nvim-treesitter/nvim-treesitter',
-    build = ':TSUpdate'
+    build = ':TSUpdate',
+    config = function()
+      require('nvim-treesitter.install').install({ "elixir", "ruby", "javascript", "typescript", "lua", "vim", "bash" })
+    end,
   },
 
   -- Undo tree visualization

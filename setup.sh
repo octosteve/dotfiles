@@ -52,7 +52,7 @@ install_homebrew_packages() {
 
   # Install packages if brew is available
   if command -v brew &>/dev/null; then
-    brew install direnv zsh ripgrep ctags tmux neovim jq gnupg libyaml wget
+    brew install direnv zsh ripgrep ctags tmux neovim jq gnupg libyaml wget tree-sitter-cli
   else
     echo "Warning: Homebrew not found. Skipping Homebrew package installation."
   fi
